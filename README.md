@@ -23,7 +23,7 @@ A modelagem lógica foi estruturada de forma normalizada (**até a 3ª Forma Nor
 1. **Prevenção de Overbooking Médico:** Constraint `UNIQUE (id_medico, data_consulta)` na tabela `consultas`.
 2. **Prevenção de Sobreposição de Leitos:** Constraint `UNIQUE (id_quarto, data_entrada)` na tabela `internacoes`.
 3. **Integridade Referencial Estrita:** Uso de `ON DELETE RESTRICT` nas Foreign Keys ligadas a pacientes e médicos para evitar exclusão acidental de histórico clínico.
-4. **Consistência de Dados de Farmácia:** Restrição `CHECK` na tabela `prescricoes` garantindo a obrigatoriedade conjunta de medicamento, dosagem e quantidade.
+4. **Consistência de Dados de Farmácia:** Restrição `CHECK` na tabela `prescricoes` garantindo a obrigatoriedade conjunta de medicamento, dosagem e quantidade.†
 
 ---
 
@@ -155,7 +155,7 @@ USE db_hospital;
 ## 8. Relatório de Queries Estratégicas (DQL — 15 Perguntas de Negócio)
 
 ### Pergunta 1 (Farmácia)
-**Demanda:** Emitir um relatório completo contendo o nome do paciente, nome do médico atendedor, data da consulta, medicamento prescrito e a quantidade receitada.
+**Demanda:** Emitir um relatório completo contendo o nome do paciente, nome do médico atendedor, data da consulta, medicamento prescrito e a quantidade receitada.†
 
 ```sql
 SELECT 
@@ -282,7 +282,7 @@ FROM consultas;
 ```
 
 ### Pergunta 10 (Família Silva)
-**Demanda:** Identifique as consultas realizadas por pacientes que possuem a família "Silva" no nome. Apresente o nome do paciente, nome do médico e a data da consulta.
+**Demanda:** Identifique as consultas realizadas por pacientes que possuem a família "Silva" no nome. Apresente o nome do paciente, nome do médico e a data da consulta.†
 
 ```sql
 SELECT 
@@ -386,7 +386,7 @@ mysql -u root -p < dump_db_hospital.sql
 ### Via MySQL Workbench
 1. Acesse **Server** $\rightarrow$ **Data Export**.
 2. Selecione a base `db_hospital` e escolha a opção **Dump Structure and Data**.
-3. Exporte para um arquivo único `.sql`.
+3. Exporte para um arquivo único `.sql`.†
 
 
-## De JuliaKarol
+## De Julia†Karol 

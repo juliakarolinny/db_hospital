@@ -2,7 +2,7 @@
 SGBD gerenciamento de um hospital. Atividade para fins avaliativos.
 
 [documenta_o_do_banco_de_dados_hospitalar (2).md](https://github.com/user-attachments/files/34375866/documenta_o_do_banco_de_dados_hospitalar.2.md)
-# 🏥 Sistema de Gestão Hospitalar "Vida & Saúde" — Documentação Oficial do Banco de Dados
+# 🏥 Sistema de Gestão Hospitalar — Documentação do Banco de Dados
 
 ## 1. Contextualização do Projeto
 

@@ -1,4 +1,4 @@
-# db_hospital-
+# db_hospital
 SGBD gerenciamento de um hospital. Atividade para fins avaliativos.
 
 [documenta_o_do_banco_de_dados_hospitalar (2).md](https://github.com/user-attachments/files/34375866/documenta_o_do_banco_de_dados_hospitalar.2.md)

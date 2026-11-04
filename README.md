@@ -1,7 +1,7 @@
 # db_hospital-
 SGBD gerenciamento de um hospital. Atividade para fins avaliativos.
 
-[documenta_o_do_banco_de_dados_hospitalar.md](https://github.com/user-attachments/files/34375629/documenta_o_do_banco_de_dados_hospitalar.md)
+[documenta_o_do_banco_de_dados_hospitalar (2).md](https://github.com/user-attachments/files/34375866/documenta_o_do_banco_de_dados_hospitalar.2.md)
 # 🏥 Sistema de Gestão Hospitalar "Vida & Saúde" — Documentação Oficial do Banco de Dados
 
 ## 1. Contextualização do Projeto
@@ -27,9 +27,9 @@ A modelagem lógica foi estruturada de forma normalizada (**até a 3ª Forma Nor
 
 ---
 
-## 3. Estrutura de Arquivos SQL (DDL/DML)
+## 3. Estrutura dos Arquivos SQL (DDL/DML)
 
-O banco de dados `db_hospital` é composto por 6 scripts organizados que contêm a estrutura e a carga de dados (mínimo de 10 registros por tabela):
+O banco de dados `db_hospital` é composto por 6 scripts organizados que contêm a estrutura e a carga de dados (com no mínimo 10 registros por tabela):
 
 ```text
 db_hospital /
@@ -43,7 +43,21 @@ db_hospital /
 
 ---
 
-## 4. Modelagem Lógica do Banco de Dados
+## 4. Glossário Técnico: Diferença entre CHAR e VARCHAR
+
+No projeto `db_hospital`, foram utilizados dois tipos principais de cadeias de caracteres de acordo com a natureza dos dados:
+
+* **`CHAR(n)` (Tamanho Fixo):**
+  * Aloca sempre uma quantidade fixa de memória no disco definida no parâmetro $n$, independente da quantidade de caracteres digitados (preenchendo o restante com espaços em branco).
+  * **Uso no Projeto:** Utilizado no campo `crm` (`varchar(20)`) e `cpf` (`varchar(14)`), onde o formato segue um número fixo de caracteres padrão. A vantagem é o desempenho ligeiramente mais rápido em indexação e leitura.
+
+* **`VARCHAR(n)` (Tamanho Variável):**
+  * Aloca dinamicamente apenas o espaço utilizado pelos caracteres reais inseridos mais 1 ou 2 bytes de prefixo de tamanho.
+  * **Uso no Projeto:** Utilizado em `nome_paciente varchar(200)`, `especialidade varchar(200)`, `medicamento varchar(200)` e `convenio varchar(200)`. A vantagem é a economia considerável de espaço em disco quando a extensão dos textos é imprevisível.
+
+---
+
+## 5. Modelagem Lógica do Banco de Dados
 
 ### Diagrama Entidade-Relacionamento (Mermaid.js)
 
@@ -109,15 +123,15 @@ erDiagram
 
 ---
 
-## 5. Aplicação das Formas Normais (1FN, 2FN e 3FN)
+## 6. Aplicação das Formas Normais (1FN, 2FN e 3FN)
 
 * **1ª Forma Normal (1FN):** Atributos atômicos. Prescrições medicamentosas foram isoladas na tabela `prescricoes` em vez de listas concatenadas na tabela `consultas`.
-* **2ª Forma Normal (2FN):** Eliminação de dependências parciais. Todos os atributos não-chave de `prescricoes`, `consultas` e `internacoes` dependem integralmente das suas respetivas chaves primárias simples.
+* **2ª Forma Normal (2FN):** Eliminação de dependências parciais. Todos os atributos não-chave de `prescricoes`, `consultas` e `internacoes` dependem integralmente das suas respectivas chaves primárias simples.
 * **3ª Forma Normal (3FN):** Eliminação de dependências transitivas. A tabela `internacoes` referencia apenas `id_quarto`, evitando armazenar atributos transitivos como `andar` ou `tipo_quarto`, que pertencem exclusivamente a `quartos`.
 
 ---
 
-## 6. Instruções de Instalação e Criação do Banco
+## 7. Instruções de Instalação e Criação do Banco
 
 ```sql
 CREATE DATABASE IF NOT EXISTS db_hospital
@@ -128,6 +142,7 @@ USE db_hospital;
 ```
 
 ### Ordem Sequencial de Execução de Scripts:
+
 1. `db_hospital_pacientes.sql`
 2. `db_hospital_medicos.sql`
 3. `db_hospital_quartos.sql`
@@ -137,7 +152,7 @@ USE db_hospital;
 
 ---
 
-## 7. Relatório de Queries Estratégicas (DQL — 15 Perguntas de Negócio)
+## 8. Relatório de Queries Estratégicas (DQL — 15 Perguntas de Negócio)
 
 ### Pergunta 1 (Farmácia)
 **Demanda:** Emitir um relatório completo contendo o nome do paciente, nome do médico atendedor, data da consulta, medicamento prescrito e a quantidade receitada.
@@ -156,8 +171,6 @@ INNER JOIN medicos m ON c.id_medico = m.id_medico
 ORDER BY c.data_consulta DESC;
 ```
 
----
-
 ### Pergunta 2 (Auditoria)
 **Demanda:** Histórico de internações com o nome do paciente, o número do quarto, o andar onde ele está localizado, a data de entrada na internação e o valor da diária.
 
@@ -174,8 +187,6 @@ INNER JOIN quartos q ON i.id_quarto = q.id_quarto
 ORDER BY i.data_entrada DESC;
 ```
 
----
-
 ### Pergunta 3 (Recepção)
 **Demanda:** Listar o nome de todos os pacientes, seus respectivos convênios, os nomes dos médicos que os atenderam e suas especialidades.
 
@@ -190,8 +201,6 @@ INNER JOIN pacientes p ON c.id_paciente = p.id_paciente
 INNER JOIN medicos m ON c.id_medico = m.id_medico
 ORDER BY p.nome_paciente;
 ```
-
----
 
 ### Pergunta 4 (Coordenação Médica)
 **Demanda:** Lista de todas as prescrições emitidas, indicando o nome do médico responsável, a sua especialidade, o nome do paciente atendido e o remédio indicado.
@@ -208,8 +217,6 @@ INNER JOIN medicos m ON c.id_medico = m.id_medico
 INNER JOIN pacientes p ON c.id_paciente = p.id_paciente
 ORDER BY m.nome_medico;
 ```
-
----
 
 ### Pergunta 5 (Diretoria Médica)
 **Demanda:** Cruzar dados dos pacientes que já foram internados e também passaram por consultas: exiba sem duplicidades o nome do paciente, o quarto ocupado na internação, o nome do médico atendente na consulta e a data dessa consulta.
@@ -228,8 +235,6 @@ INNER JOIN medicos m ON c.id_medico = m.id_medico
 ORDER BY p.nome_paciente, c.data_consulta;
 ```
 
----
-
 ### Pergunta 6 (Atendimentos Recentes)
 **Demanda:** Liste o nome dos pacientes, o nome do médico e a data da consulta para todas as consultas registradas, exibindo primeiro os atendimentos mais recentes.
 
@@ -243,8 +248,6 @@ INNER JOIN pacientes p ON c.id_paciente = p.id_paciente
 INNER JOIN medicos m ON c.id_medico = m.id_medico
 ORDER BY c.data_consulta DESC;
 ```
-
----
 
 ### Pergunta 7 (Setor Financeiro - Diárias)
 **Demanda:** Listagem com o nome do paciente, o número do quarto e o valor da diária cobrado, ordenando do menor valor de diária para o maior.
@@ -260,8 +263,6 @@ INNER JOIN quartos q ON i.id_quarto = q.id_quarto
 ORDER BY i.valor_diaria ASC;
 ```
 
----
-
 ### Pergunta 8 (Média de Consultas)
 **Demanda:** Qual é o valor médio praticado nas consultas médicas registradas até o momento no hospital?
 
@@ -271,8 +272,6 @@ SELECT
 FROM consultas;
 ```
 
----
-
 ### Pergunta 9 (Arrecadação Total de Consultas)
 **Demanda:** Qual é o valor total já arrecadado pelo hospital exclusivamente com as consultas médicas agendadas/realizadas?
 
@@ -281,8 +280,6 @@ SELECT
     SUM(valor_consulta) AS faturamento_total_consultas
 FROM consultas;
 ```
-
----
 
 ### Pergunta 10 (Família Silva)
 **Demanda:** Identifique as consultas realizadas por pacientes que possuem a família "Silva" no nome. Apresente o nome do paciente, nome do médico e a data da consulta.
@@ -299,8 +296,6 @@ WHERE p.nome_paciente LIKE '%Silva%'
 ORDER BY c.data_consulta;
 ```
 
----
-
 ### Pergunta 11 (Área de Cardiologia)
 **Demanda:** Busque todas as consultas conduzidas por médicos de alguma área ligada à Cardiologia (especialidade contendo "Cardio"), mostrando o nome do paciente, o nome do médico e a especialidade.
 
@@ -315,8 +310,6 @@ INNER JOIN medicos m ON c.id_medico = m.id_medico
 WHERE m.especialidade LIKE '%Cardio%'
 ORDER BY m.nome_medico;
 ```
-
----
 
 ### Pergunta 12 (Internações 1º Semestre 2026)
 **Demanda:** Levantamento de todas as internações com data de entrada ocorridas especificamente no primeiro semestre do ano de 2026 (entre 01/01/2026 e 30/06/2026). Retorne o nome do paciente, número do quarto e a data de entrada.
@@ -333,8 +326,6 @@ WHERE i.data_entrada BETWEEN '2026-01-01 00:00:00' AND '2026-06-30 23:59:59'
 ORDER BY i.data_entrada;
 ```
 
----
-
 ### Pergunta 13 (Receita por Convênio Unimed)
 **Demanda:** Valor total investido em consultas por pacientes do plano "Unimed" (qualquer variação contendo Unimed). Agrupe o resultado por paciente, mostre o convênio e ordene a receita do maior valor gasto para o menor.
 
@@ -350,8 +341,6 @@ GROUP BY p.id_paciente, p.nome_paciente, p.convenio
 ORDER BY total_investido DESC;
 ```
 
----
-
 ### Pergunta 14 (Custos de Internação - Sobrenome Oliveira)
 **Demanda:** Mapear o custo total das diárias de internação agrupado por andar dos quartos, considerando apenas pacientes que tenham o sobrenome "Oliveira". Ordene o resultado pelo número do andar em ordem crescente.
 
@@ -366,8 +355,6 @@ WHERE p.nome_paciente LIKE '%Oliveira%'
 GROUP BY q.andar
 ORDER BY q.andar ASC;
 ```
-
----
 
 ### Pergunta 15 (Faturamento Departamento Cirúrgico)
 **Demanda:** Faturamento total em consultas agrupado pelas especialidades médicas que pertençam ao departamento cirúrgico (especialidade contendo o termo "Cirurgia"). Apresente a especialidade, o total arrecadado e ordene do maior faturamento para o menor.
@@ -385,7 +372,7 @@ ORDER BY faturamento_total DESC;
 
 ---
 
-## 8. Procedimentos de Exportação e Importação (Dump)
+## 9. Procedimentos de Exportação e Importação (Dump)
 
 ### Via Terminal
 ```bash
@@ -400,3 +387,6 @@ mysql -u root -p < dump_db_hospital.sql
 1. Acesse **Server** $\rightarrow$ **Data Export**.
 2. Selecione a base `db_hospital` e escolha a opção **Dump Structure and Data**.
 3. Exporte para um arquivo único `.sql`.
+
+
+## De JuliaKarol
